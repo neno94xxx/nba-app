@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 24px;
+}
+
+h1 {
+  margin-bottom: 16px;
+}
+
+#gamesResult {
+  margin-top: 24px;
+}
+
+.game-card {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+}

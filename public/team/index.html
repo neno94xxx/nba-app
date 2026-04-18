@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teams</title>
+  <link rel="stylesheet" href="/team/team.css" />
+</head>
+<body>
+  <h1>Teams Page</h1>
+
+  <h2>Insert Team</h2>
+
+  <form id="teamForm">
+    <input id="edit_id" name="edit_id" type="hidden" />
+    <div>
+      <label for="team_id">Team ID</label>
+      <input id="team_id" name="team_id" type="number" />
+    </div>
+
+    <div>
+      <label for="abbreviation">Abbreviation</label>
+      <input id="abbreviation" name="abbreviation" type="text" />
+    </div>
+
+    <div>
+      <label for="city">City</label>
+      <input id="city" name="city" type="text" />
+    </div>
+
+    <div>
+      <label for="nickname">Nickname</label>
+      <input id="nickname" name="nickname" type="text" />
+    </div>
+
+    <div>
+      <label for="full_name">Full Name</label>
+      <input id="full_name" name="full_name" type="text" />
+    </div>
+
+    <div>
+      <label for="conference">Conference</label>
+      <input id="conference" name="conference" type="text" />
+    </div>
+
+    <button id="saveTeamButton" type="submit">Save Team</button>
+  </form>
+
+  <div id="formMessage"></div>
+
+  <hr />
+
+  <div class="tables-wrapper">
+    <section class="table-section">
+        <div class="section-header">
+        <h2>NBA API Teams</h2>
+        <button id="loadTeamsButton">Load API Teams</button>
+        </div>
+
+        <div class="table-scroll">
+        <table>
+            <thead>
+            <tr>
+                <th>Team ID</th>
+                <th>Abbreviation</th>
+            </tr>
+            </thead>
+            <tbody id="apiTeamsTableBody"></tbody>
+        </table>
+        </div>
+    </section>
+
+    <section class="table-section">
+        <div class="section-header">
+        <h2>Supabase Teams</h2>
+        <button id="loadDbTeamsButton">Load DB Teams</button>
+        </div>
+
+        <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Team ID</th>
+                    <th>Abbreviation</th>
+                    <th>City</th>
+                    <th>Nickname</th>
+                    <th>Full Name</th>
+                    <th>Conference</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="dbTeamsTableBody"></tbody>
+        </table>
+        </div>
+    </section>
+  </div>
+
+  <p><a href="/">Nazad na Home</a></p>
+
+  <script src="/team/team.js"></script>
+</body>
+</html>
