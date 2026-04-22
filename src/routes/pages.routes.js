@@ -15,4 +15,8 @@ router.get('/team', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'team', 'index.html'));
 });
 
+router.get('/players-by-season', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'public', 'players-by-season', 'index.html'));
+});
+
 module.exports = router;

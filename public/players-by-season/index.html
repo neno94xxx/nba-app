@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Players By Season</title>
+  <link rel="stylesheet" href="/players-by-season/players-by-season.css" />
+</head>
+<body>
+  <h1>Players By Season</h1>
+
+  <h2>Insert / Update Player</h2>
+
+  <form id="playerForm">
+    <input id="edit_id" name="edit_id" type="hidden" />
+
+    <div class="form-grid">
+      <div>
+        <label for="player_id">Player ID</label>
+        <input id="player_id" name="player_id" type="number" />
+      </div>
+
+      <div>
+        <label for="first_name">First Name</label>
+        <input id="first_name" name="first_name" type="text" />
+      </div>
+
+      <div>
+        <label for="last_name">Last Name</label>
+        <input id="last_name" name="last_name" type="text" />
+      </div>
+
+      <div>
+        <label for="birthdate">Birthdate</label>
+        <input id="birthdate" name="birthdate" type="date" />
+      </div>
+
+      <div>
+        <label for="roster_status">Roster Status</label>
+        <input id="roster_status" name="roster_status" type="text" />
+      </div>
+
+      <div>
+        <label for="team_id">Team ID</label>
+        <input id="team_id" name="team_id" type="number" />
+      </div>
+
+      <div>
+        <label for="team_abbreviation">Team Abbreviation</label>
+        <input id="team_abbreviation" name="team_abbreviation" type="text" />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button id="savePlayerButton" type="submit">Save Player</button>
+      <button id="cancelEditButton" type="button">Cancel Edit</button>
+    </div>
+  </form>
+
+  <div id="formMessage"></div>
+
+  <hr />
+
+  <div class="controls">
+    <label for="seasonSelect">Season</label>
+    <select id="seasonSelect">
+      <option value="2025-26" selected>2025-26</option>
+      <option value="2024-25">2024-25</option>
+      <option value="2023-24">2023-24</option>
+      <option value="2022-23">2022-23</option>
+      <option value="2021-22">2021-22</option>
+    </select>
+
+    <button id="loadPlayersButton" type="button">Load API Players</button>
+    <button id="loadDbPlayersButton" type="button">Load DB Players</button>
+  </div>
+
+  <div id="statusMessage"></div>
+
+  <div class="tables-wrapper">
+    <section class="table-section">
+      <div class="section-header">
+        <h2>API Players</h2>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th data-sort-key="playerId">Player ID</th>
+              <th data-sort-key="displayLastCommaFirst">Display Last, First</th>
+              <th data-sort-key="firstName">First Name</th>
+              <th data-sort-key="lastName">Last Name</th>
+              <th data-sort-key="birthdate">Birthdate</th>
+              <th data-sort-key="rosterStatus">Roster Status</th>
+              <th data-sort-key="teamId">Team ID</th>
+              <th data-sort-key="teamAbbreviation">Team Abbreviation</th>
+            </tr>
+          </thead>
+          <tbody id="playersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <div class="section-header">
+        <h2>DB Players</h2>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th data-db-sort-key="id">ID</th>
+              <th data-db-sort-key="player_id">Player ID</th>
+              <th data-db-sort-key="first_name">First Name</th>
+              <th data-db-sort-key="last_name">Last Name</th>
+              <th data-db-sort-key="birthdate">Birthdate</th>
+              <th data-db-sort-key="roster_status">Roster Status</th>
+              <th data-db-sort-key="team_id">Team ID</th>
+              <th data-db-sort-key="team_abbreviation">Team Abbreviation</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dbPlayersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <p><a href="/">Nazad na Home</a></p>
+
+  <script src="/players-by-season/players-by-season.js"></script>
+</body>
+</html>

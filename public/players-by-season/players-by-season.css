@@ -1,0 +1,116 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  max-width: 1000px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+input,
+select {
+  padding: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 8px 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+#formMessage {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+#statusMessage {
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+.tables-wrapper {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.table-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
+  border: 1px solid #ccc;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background-color: #f3f3f3;
+  position: sticky;
+  top: 0;
+}
+
+th[data-sort-key]:hover,
+th[data-db-sort-key]:hover {
+  background-color: #e9e9e9;
+  cursor: pointer;
+}
+
+.mismatch-cell {
+  background-color: #ffcccc;
+}
+
+.conflict-cell {
+  background-color: #e6ccff;
+}
