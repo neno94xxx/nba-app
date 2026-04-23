@@ -3,6 +3,7 @@ const formMessage = document.getElementById('formMessage');
 
 const loadPlayersButton = document.getElementById('loadPlayersButton');
 const loadDbPlayersButton = document.getElementById('loadDbPlayersButton');
+const import10Button = document.getElementById('import10Button');
 const seasonSelect = document.getElementById('seasonSelect');
 const statusMessage = document.getElementById('statusMessage');
 
@@ -11,6 +12,7 @@ const dbPlayersTableBody = document.getElementById('dbPlayersTableBody');
 
 const apiSortableHeaders = document.querySelectorAll('th[data-sort-key]');
 const dbSortableHeaders = document.querySelectorAll('th[data-db-sort-key]');
+
 
 let playersData = [];
 let dbPlayersData = [];
@@ -230,7 +232,101 @@ async function loadDb() {
   renderDb();
 }
 
+async function importMissingPlayers(limit = 10) {
+  if (!playersData.length) {
+    statusMessage.textContent = 'Prvo učitaj API players.';
+    return;
+  }
+
+  const existingIds = new Set(
+    dbPlayersData.map((player) => normalize(player.player_id))
+  );
+
+  let importedCount = 0;
+
+  for (const player of playersData) {
+    if (importedCount >= limit) {
+      break;
+    }
+
+    const playerIdKey = normalize(player.playerId);
+
+    if (existingIds.has(playerIdKey)) {
+      continue;
+    }
+
+    statusMessage.textContent = `Importing ${importedCount + 1}/${limit} - player ${player.playerId}`;
+
+    try {
+      const needsPlayerInfo =
+        !player.firstName || !player.lastName || !player.birthdate;
+
+      if (needsPlayerInfo) {
+        const response = await fetch(`/api/player-info?playerId=${player.playerId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          const resultSet = data.resultSets?.find(
+            (result) => result.name === 'CommonPlayerInfo'
+          );
+
+          const row = resultSet?.rowSet?.[0];
+
+          if (row) {
+            player.firstName = row[1] ?? '';
+            player.lastName = row[2] ?? '';
+            player.birthdate = row[7] ?? '';
+          }
+        } else {
+          console.error('Player info error:', player.playerId, data);
+        }
+      }
+
+      const payload = {
+        player_id: player.playerId ?? null,
+        first_name: player.firstName ?? '',
+        last_name: player.lastName ?? '',
+        birthdate: formatDate(player.birthdate) || null,
+        roster_status: player.rosterStatus ?? '',
+        team_id: player.teamId ?? null,
+        team_abbreviation: player.teamAbbreviation ?? ''
+      };
+
+      const insertResponse = await fetch('/api/players/db', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const insertData = await insertResponse.json();
+
+      if (!insertResponse.ok) {
+        console.error('Insert error:', player.playerId, insertData);
+        continue;
+      }
+
+      importedCount += 1;
+      existingIds.add(playerIdKey);
+
+      renderApi();
+    } catch (error) {
+      console.error(`Import failed for player ${player.playerId}:`, error);
+    }
+  }
+
+  await loadDb();
+  renderApi();
+
+  statusMessage.textContent = `Imported ${importedCount} players.`;
+}
+
 loadDbPlayersButton.addEventListener('click', loadDb);
+
+import10Button.addEventListener('click', async () => {
+  await importMissingPlayers(10);
+});
 
 loadPlayersButton.addEventListener('click', async () => {
   const season = seasonSelect.value;
