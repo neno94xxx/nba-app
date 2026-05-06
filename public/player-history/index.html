@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player History</title>
+  <link rel="stylesheet" href="/player-history/player-history.css" />
+</head>
+<body>
+  <h1>Player History</h1>
+
+  <div class="tables-wrapper">
+    <section class="table-section">
+      <div class="section-header">
+        <h2>Players</h2>
+        <button id="loadPlayersButton" type="button">Load Players</button>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Player ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="playersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <div class="section-header">
+        <h2>Player History</h2>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Info</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <p><a href="/">Nazad na Home</a></p>
+
+  <script src="/player-history/player-history.js"></script>
+</body>
+</html>

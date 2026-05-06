@@ -19,4 +19,10 @@ router.get('/players-by-season', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'players-by-season', 'index.html'));
 });
 
+router.get('/player-history', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, '..', '..', 'public', 'player-history', 'index.html')
+  );
+});
+
 module.exports = router;
