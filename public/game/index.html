@@ -7,13 +7,97 @@
   <link rel="stylesheet" href="/game/game.css" />
 </head>
 <body>
-  <h1>Games Page</h1>
+  <h1>Games</h1>
 
-  <label for="gameDate">Datum:</label>
-  <input id="gameDate" type="date" />
-  <button id="loadGamesButton">Load Games</button>
+  <div class="controls">
+    <div>
+      <label for="seasonSelect">Season</label>
+      <select id="seasonSelect">
+        <option value="2025-26">2025-26</option>
+        <option value="2024-25" selected>2024-25</option>
+        <option value="2023-24">2023-24</option>
+        <option value="2022-23">2022-23</option>
+        <option value="2021-22">2021-22</option>
+      </select>
+    </div>
 
-  <div id="gamesResult"></div>
+    <div>
+      <label for="seasonTypeSelect">Season Type</label>
+      <select id="seasonTypeSelect">
+        <option value="Regular Season" selected>Regular Season</option>
+        <option value="Playoffs">Playoffs</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="dateFromInput">Date From</label>
+      <input id="dateFromInput" type="date" />
+    </div>
+
+    <div>
+      <label for="dateToInput">Date To</label>
+      <input id="dateToInput" type="date" />
+    </div>
+
+    <button id="loadGamesButton" type="button">Load API Games</button>
+    <button id="importAllGamesButton" type="button">Import All Missing Games</button>
+  </div>
+
+  <div id="statusMessage"></div>
+
+  <div class="tables-wrapper">
+    <section class="table-section">
+      <div class="section-header">
+        <h2>API Games</h2>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Game ID</th>
+              <th>Type</th>
+              <th>Date</th>
+              <th>Matchup</th>
+              <th>Team A</th>
+              <th>Team B</th>
+              <th>PTS A</th>
+              <th>PTS B</th>
+              <th>Import</th>
+            </tr>
+          </thead>
+          <tbody id="apiGamesTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <div class="section-header">
+        <h2>DB Games</h2>
+        <button id="loadDbGamesButton" type="button">Load DB Games</button>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Game ID</th>
+              <th>Type</th>
+              <th>Date</th>
+              <th>Matchup</th>
+              <th>Team A</th>
+              <th>Team B</th>
+              <th>PTS A</th>
+              <th>PTS B</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dbGamesTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
   <p><a href="/">Nazad na Home</a></p>
 

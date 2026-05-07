@@ -1,5 +1,7 @@
 const express = require('express');
 const { fetchGamesByDate } = require('../api/games.api');
+const { fetchLeagueGames } = require('../api/leagueGameFinder.api');
+const { insertGame, getAllGames, deleteGame } = require('../supabase/games.db');
 
 const router = express.Router();
 
@@ -15,6 +17,69 @@ router.get('/api/games/by-date', async (req, res) => {
 
     const data = await fetchGamesByDate(date);
     res.json(data);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+
+
+
+
+
+
+router.get('/api/games/league-game-finder', async (req, res) => {
+  try {
+    const {
+      season = '2024-25',
+      seasonType = 'Regular Season',
+      dateFrom = '',
+      dateTo = ''
+    } = req.query;
+
+    const data = await fetchLeagueGames({
+      season,
+      seasonType,
+      dateFrom,
+      dateTo
+    });
+
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+router.get('/api/games/db', async (req, res) => {
+  try {
+    const data = await getAllGames();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+router.post('/api/games/db', async (req, res) => {
+  try {
+    const inserted = await insertGame(req.body);
+    res.json(inserted);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+router.delete('/api/games/db/:id', async (req, res) => {
+  try {
+    const deleted = await deleteGame(req.params.id);
+    res.json(deleted);
   } catch (err) {
     res.status(500).json({
       error: err.message
