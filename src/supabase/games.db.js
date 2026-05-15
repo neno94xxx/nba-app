@@ -57,8 +57,49 @@ async function deleteGame(id) {
   return data;
 }
 
+async function getGamesByFilters({
+  gameType,
+  dateFrom,
+  dateTo,
+  team
+}) {
+  let query = supabase
+    .from('Game')
+    .select('*')
+    .order('game_date', { ascending: true });
+
+  if (gameType) {
+    query = query.eq('game_type', gameType);
+  }
+
+  if (dateFrom) {
+    query = query.gte('game_date', dateFrom);
+  }
+
+  if (dateTo) {
+    query = query.lte('game_date', dateTo);
+  }
+
+  if (team) {
+    const normalizedTeam = String(team).trim().toUpperCase();
+
+    query = query.or(
+      `team_a_abbreviation.eq.${normalizedTeam},team_b_abbreviation.eq.${normalizedTeam}`
+    );
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 module.exports = {
   insertGame,
   getAllGames,
-  deleteGame
+  deleteGame,
+  getGamesByFilters
 };

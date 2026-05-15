@@ -1,7 +1,7 @@
 const express = require('express');
 const { fetchGamesByDate } = require('../api/games.api');
 const { fetchLeagueGames } = require('../api/leagueGameFinder.api');
-const { insertGame, getAllGames, deleteGame } = require('../supabase/games.db');
+const { insertGame, getAllGames, deleteGame, getGamesByFilters } = require('../supabase/games.db');
 
 const router = express.Router();
 
@@ -80,6 +80,32 @@ router.delete('/api/games/db/:id', async (req, res) => {
   try {
     const deleted = await deleteGame(req.params.id);
     res.json(deleted);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+
+
+router.get('/api/games/db/search', async (req, res) => {
+  try {
+    const {
+      gameType = '',
+      dateFrom = '',
+      dateTo = '',
+      team = ''
+    } = req.query;
+
+    const data = await getGamesByFilters({
+      gameType,
+      dateFrom,
+      dateTo,
+      team
+    });
+
+    res.json(data);
   } catch (err) {
     res.status(500).json({
       error: err.message

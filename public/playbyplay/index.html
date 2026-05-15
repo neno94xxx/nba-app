@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play By Play</title>
+  <link rel="stylesheet" href="/playbyplay/playbyplay.css" />
+</head>
+<body>
+  <h1>Play By Play</h1>
+
+  <div class="controls">
+    <div>
+      <label for="seasonSelect">Season</label>
+      <select id="seasonSelect">
+        <option value="2025-26" selected>2025-26</option>
+        <option value="2024-25">2024-25</option>
+        <option value="2023-24">2023-24</option>
+        <option value="2022-23">2022-23</option>
+        <option value="2021-22">2021-22</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="gameTypeSelect">Type</label>
+      <select id="gameTypeSelect">
+        <option value="REG" selected>REG</option>
+        <option value="POF">POF</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="teamInput">Team</label>
+      <input
+        id="teamInput"
+        type="text"
+        placeholder="Optional, e.g. LAL"
+        maxlength="3"
+      />
+    </div>
+
+    <button id="loadGamesButton" type="button">Load Games</button>
+  </div>
+
+  <div id="statusMessage"></div>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Games</h2>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Game ID</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Matchup</th>
+            <th>Team A</th>
+            <th>Team B</th>
+            <th>Score</th>
+            <th>Select</th>
+          </tr>
+        </thead>
+        <tbody id="gamesTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Selected Game</h2>
+    </div>
+
+    <div id="selectedGameInfo">
+      Nije odabrana utakmica.
+    </div>
+  </section>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Play By Play</h2>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th data-play-sort="actionNumber">#</th>
+            <th data-play-sort="period">Period</th>
+            <th data-play-sort="clock">Clock</th>
+            <th data-play-sort="actionType">Type</th>
+            <th data-play-sort="subType">Sub Type</th>
+            <th data-play-sort="descriptor">Descriptor</th>
+            <th data-play-sort="teamId">Team ID</th>
+            <th data-play-sort="teamTricode">Team</th>
+            <th data-play-sort="personId">Person ID</th>
+            <th data-play-sort="playerNameI">Player</th>
+            <th data-play-sort="description">Description</th>
+            <th data-play-sort="scoreAway">Score Away</th>
+            <th data-play-sort="scoreHome">Score Home</th>
+            <th data-play-sort="possession">Possession</th>
+            <th data-play-sort="x">X</th>
+            <th data-play-sort="y">Y</th>
+            <th data-play-sort="side">Side</th>
+            <th data-play-sort="isFieldGoal">Is FG</th>
+            <th data-play-sort="shotResult">Shot Result</th>
+            <th data-play-sort="shotDistance">Shot Distance</th>
+            <th data-play-sort="pointsTotal">Points Total</th>
+            <th data-play-sort="assistPersonId">Assist ID</th>
+            <th data-play-sort="assistPlayerName">Assist Player</th>
+            <th data-play-sort="blockPersonId">Block ID</th>
+            <th data-play-sort="blockPlayerName">Block Player</th>
+            <th data-play-sort="stealPersonId">Steal ID</th>
+            <th data-play-sort="stealPlayerName">Steal Player</th>
+            <th data-play-sort="foulDrawnPersonId">Foul Drawn ID</th>
+            <th data-play-sort="foulDrawnPlayerName">Foul Drawn Player</th>
+            <th data-play-sort="freeThrowNum">FT Num</th>
+            <th data-play-sort="freeThrowTotal">FT Total</th>
+            <th data-play-sort="reboundTotal">Reb Total</th>
+            <th data-play-sort="reboundDefensiveTotal">Reb Def</th>
+            <th data-play-sort="reboundOffensiveTotal">Reb Off</th>
+            <th data-play-sort="turnoverTotal">Turnover Total</th>
+            <th data-play-sort="jumpBallWonPersonId">Jump Won ID</th>
+            <th data-play-sort="jumpBallWonPlayerName">Jump Won</th>
+            <th data-play-sort="jumpBallLostPersonId">Jump Lost ID</th>
+            <th data-play-sort="jumpBallLostPlayerName">Jump Lost</th>
+            <th data-play-sort="jumpBallRecoverdPersonId">Jump Recovered ID</th>
+            <th data-play-sort="jumpBallRecoveredName">Jump Recovered</th>
+            <th data-play-sort="qualifiers">Qualifiers</th>
+            <th data-play-sort="personIdsFilter">Person IDs Filter</th>
+            <th data-play-sort="timeActual">Time Actual</th>
+            <th data-play-sort="edited">Edited</th>
+            <th data-play-sort="orderNumber">Order #</th>
+            <th data-play-sort="periodType">Period Type</th>
+            <th data-play-sort="xLegacy">xLegacy</th>
+            <th data-play-sort="yLegacy">yLegacy</th>
+            <th data-play-sort="isTargetScoreLastPeriod">Target Score Last Period</th>
+          </tr>
+        </thead>
+        <tbody id="playsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+  <div style="margin-top: 12px;">
+    <button id="loadTimelineButton" type="button" disabled>
+      Load Timeline
+    </button>
+
+    <button id="importGameDataButton" type="button" disabled>
+      Import Game Data
+    </button>
+  </div>
+
+  <p><a href="/">Nazad na Home</a></p>
+
+  <script src="/playbyplay/playbyplay-transform.js"></script>
+  <script src="/playbyplay/playbyplay-browser.js"></script>
+</body>
+</html>

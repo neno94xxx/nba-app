@@ -47,12 +47,36 @@ function getSelectedGameType() {
   return mapSeasonTypeToGameType(seasonTypeSelect.value);
 }
 
+function getSeasonDateRange(season) {
+  const startYear = Number(season.split('-')[0]);
+
+  if (!startYear) {
+    return null;
+  }
+
+  return {
+    from: `${startYear}-10-01`,
+    to: `${startYear + 1}-09-30`
+  };
+}
+
 function getFilteredDbGames() {
   const selectedGameType = getSelectedGameType();
+  const selectedSeason = seasonSelect.value;
+  const seasonRange = getSeasonDateRange(selectedSeason);
 
   return dbGamesData.filter((game) => {
-    if (!selectedGameType) return true;
-    return normalize(game.game_type) === normalize(selectedGameType);
+    const matchesType =
+      !selectedGameType ||
+      normalize(game.game_type) === normalize(selectedGameType);
+
+    const gameDate = formatDate(game.game_date);
+
+    const matchesSeason =
+      !seasonRange ||
+      (gameDate >= seasonRange.from && gameDate <= seasonRange.to);
+
+    return matchesType && matchesSeason;
   });
 }
 
@@ -451,5 +475,9 @@ loadGamesButton.addEventListener('click', loadApiGames);
 loadDbGamesButton.addEventListener('click', loadDbGames);
 importAllGamesButton.addEventListener('click', importAllMissingGames);
 seasonTypeSelect.addEventListener('change', handleSeasonTypeChange);
+seasonSelect.addEventListener('change', () => {
+  renderDbGames();
+  renderApiGames();
+});
 
 loadDbGames();

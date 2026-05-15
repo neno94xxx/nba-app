@@ -25,4 +25,10 @@ router.get('/player-history', (req, res) => {
   );
 });
 
+router.get('/playbyplay', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, '..', '..', 'public', 'playbyplay', 'index.html')
+  );
+});
+
 module.exports = router;
