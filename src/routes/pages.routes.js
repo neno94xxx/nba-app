@@ -31,4 +31,10 @@ router.get('/playbyplay', (req, res) => {
   );
 });
 
+router.get('/player-game-stats', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, '..', '..', 'public', 'player-game-stats', 'index.html')
+  );
+});
+
 module.exports = router;

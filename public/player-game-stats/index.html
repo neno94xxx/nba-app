@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player Game Stats</title>
+  <link rel="stylesheet" href="/player-game-stats/player-game-stats.css" />
+</head>
+<body>
+  <h1>Player Game Stats</h1>
+
+  <div class="controls">
+    <div>
+      <label for="seasonSelect">Season</label>
+      <select id="seasonSelect">
+        <option value="2025-26" selected>2025-26</option>
+        <option value="2024-25">2024-25</option>
+        <option value="2023-24">2023-24</option>
+        <option value="2022-23">2022-23</option>
+        <option value="2021-22">2021-22</option>
+      </select>
+    </div>
+
+    
+
+    <div>
+      <label for="gameTypeSelect">Type</label>
+      <select id="gameTypeSelect">
+        <option value="REG" selected>REG</option>
+        <option value="POF">POF</option>
+      </select>
+    </div>
+
+    <button id="loadGamesButton" type="button">
+      Load Games
+    </button>
+    <button id="importNext20Button" type="button" disabled>
+        Import Next 20 Missing
+    </button>
+  </div>
+
+  <div id="statusMessage"></div>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Games</h2>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Game ID</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Matchup</th>
+            <th>Team A</th>
+            <th>Team B</th>
+            <th>Score</th>
+            <th>Import</th>
+          </tr>
+        </thead>
+        <tbody id="gamesTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p><a href="/">Nazad na Home</a></p>
+
+  <script src="/player-game-stats/player-game-stats.js"></script>
+</body>
+</html>
