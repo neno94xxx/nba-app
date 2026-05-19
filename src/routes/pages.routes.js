@@ -37,4 +37,10 @@ router.get('/player-game-stats', (req, res) => {
   );
 });
 
+router.get('/featured', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, '..', '..', 'public', 'featured', 'index.html')
+  );
+});
+
 module.exports = router;

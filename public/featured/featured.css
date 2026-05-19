@@ -1,0 +1,115 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 24px;
+}
+
+h1 {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+select {
+  padding: 3px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 8px 12px;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+#statusMessage {
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+.table-section {
+  margin-top: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 380px;
+  border: 1px solid #ccc;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 2px 3px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background-color: #f3f3f3;
+  position: sticky;
+  top: 0;
+}
+
+.featured-row {
+  background-color: #d8f5d0;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.team-logo,
+.player-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
+
+.player-image {
+  border-radius: 50%;
+}
+
+.team-logo-input,
+.player-image-input {
+  max-width: 220px;
+}
+
+.delete-button {
+  background-color: #b00020;
+  color: white;
+  border: 1px solid #7a0016;
+}
+
+.delete-button:hover {
+  background-color: #8a0018;
+}

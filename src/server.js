@@ -8,6 +8,7 @@ const teamsRoutes = require('./routes/teams.routes');
 const playersRoutes = require('./routes/players.routes');
 const playByPlayRoutes = require('./routes/playByPlay.routes');
 const playerGameStatsRoutes = require('./routes/playerGameStats.routes');
+const featuredRoutes = require('./routes/featured.routes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/', teamsRoutes);
 app.use('/', playersRoutes);
 app.use('/', playByPlayRoutes);
 app.use('/', playerGameStatsRoutes);
+app.use('/', featuredRoutes);
 
 const PORT = process.env.PORT || 3000;
 

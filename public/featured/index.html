@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Featured</title>
+  <link rel="stylesheet" href="/featured/featured.css" />
+</head>
+<body>
+  <h1>Featured Teams and Players</h1>
+
+  <div id="statusMessage"></div>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Teams</h2>
+    </div>
+
+    <div class="controls">
+      <div>
+        <label for="conferenceSelect">Conference</label>
+        <select id="conferenceSelect">
+          <option value="">All</option>
+          <option value="East">East</option>
+          <option value="West">West</option>
+        </select>
+      </div>
+
+      <button id="loadTeamsButton" type="button">
+        Load Teams
+      </button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Conference</th>
+            <th>Team ID</th>
+            <th>Team Name</th>
+            <th>Add</th>
+          </tr>
+        </thead>
+        <tbody id="teamsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Featured Teams</h2>
+      <button id="loadFeaturedTeamsButton" type="button">
+        Reload Featured Teams
+      </button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Team ID</th>
+            <th>Team Name</th>
+            <th>Logo</th>
+            <th>Featured</th>
+            <th>Sort Order</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Upload Logo</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="featuredTeamsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Players</h2>
+    </div>
+
+    <div class="controls">
+      <div>
+        <label for="playerTeamSelect">Team</label>
+        <select id="playerTeamSelect">
+          <option value="">All</option>
+        </select>
+      </div>
+
+      <button id="loadPlayersButton" type="button">
+        Load Players
+      </button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>Player ID</th>
+            <th>Player Name</th>
+            <th>Add</th>
+          </tr>
+        </thead>
+        <tbody id="playersTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="table-section">
+    <div class="section-header">
+      <h2>Featured Players</h2>
+      <button id="loadFeaturedPlayersButton" type="button">
+        Reload Featured Players
+      </button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Player ID</th>
+            <th>Player Name</th>
+            <th>Team</th>
+            <th>Image</th>
+            <th>Featured</th>
+            <th>Sort Order</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Upload Image</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="featuredPlayersTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p><a href="/">Nazad na Home</a></p>
+
+  <script src="/featured/featured.js"></script>
+</body>
+</html>
