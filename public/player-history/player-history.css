@@ -12,6 +12,13 @@ body {
   flex: 1;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .table-scroll {
   max-height: 600px;
   overflow-y: auto;
@@ -23,11 +30,52 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ccc;
   padding: 6px;
 }
 
 th {
   background: #f3f3f3;
+}
+
+button {
+  padding: 6px 10px;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stats-update-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #ccc;
+}
+
+#playerStatsUpdateStatus {
+  margin-top: 12px;
+}
+
+#playerStatsUpdateStatus table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+#playerStatsUpdateStatus th,
+#playerStatsUpdateStatus td {
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+  text-align: left;
+}
+
+.success-row {
+  background-color: #d8f5d0;
+}
+
+.error-row {
+  background-color: #ffd6d6;
 }

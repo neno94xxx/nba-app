@@ -13,7 +13,9 @@
     <section class="table-section">
       <div class="section-header">
         <h2>Players</h2>
-        <button id="loadPlayersButton" type="button">Load Players</button>
+        <button id="loadPlayersButton" type="button">
+          Load Players
+        </button>
       </div>
 
       <div class="table-scroll">
@@ -40,7 +42,10 @@
         <table>
           <thead>
             <tr>
-              <th>Info</th>
+              <th>Previous Team</th>
+              <th></th>
+              <th>Current Team</th>
+              <th>First Game Date</th>
             </tr>
           </thead>
           <tbody id="historyTableBody"></tbody>
@@ -48,6 +53,20 @@
       </div>
     </section>
   </div>
+
+  <section class="stats-update-section">
+    <h2>Player Stats Update</h2>
+
+    <p>
+      Uses currently loaded players from the grid. Each click updates the next 20 players.
+    </p>
+
+    <button id="playerStatsUpdateButton" type="button" disabled>
+      Player stats update
+    </button>
+
+    <div id="playerStatsUpdateStatus"></div>
+  </section>
 
   <p><a href="/">Nazad na Home</a></p>
 
