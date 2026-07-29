@@ -1,4 +1,5 @@
 const supabase = require('./client');
+const { randomUUID } = require('node:crypto');
 
 async function getTeamsForFeatured({ conference }) {
   let query = supabase
@@ -193,16 +194,78 @@ async function updateFeaturedPlayerFeatured(playerId, featured) {
   return data;
 }
 
-async function uploadTeamLogo(teamId, file) {
-  const fileExtension = file.originalname.split('.').pop();
-  const filePath = `${teamId}.${fileExtension}`;
+function getFileExtension(file) {
+  const originalName = String(file.originalname || '');
+  const lastDotIndex = originalName.lastIndexOf('.');
+  const extension = lastDotIndex === -1
+    ? ''
+    : originalName.substring(lastDotIndex + 1).toLowerCase();
+
+  if (!extension || !/^[a-z0-9]+$/.test(extension)) {
+    throw new Error('Datoteka mora imati ispravnu ekstenziju.');
+  }
+
+  return extension;
+}
+
+function buildVersionedStoragePath(ownerId, file) {
+  const extension = getFileExtension(file);
+  const uniquePart = `${Date.now()}-${randomUUID()}`;
+
+  return `${ownerId}-${uniquePart}.${extension}`;
+}
+
+async function removeStorageObject(bucketName, filePath) {
+  if (!filePath) {
+    return;
+  }
+
+  const { error } = await supabase
+    .storage
+    .from(bucketName)
+    .remove([filePath]);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+async function replaceFeaturedAsset({
+  tableName,
+  idColumn,
+  ownerId,
+  urlColumn,
+  bucketName,
+  file
+}) {
+  const { data: existingRows, error: selectError } = await supabase
+    .from(tableName)
+    .select(`${idColumn}, ${urlColumn}`)
+    .eq(idColumn, ownerId);
+
+  if (selectError) {
+    throw new Error(selectError.message);
+  }
+
+  const existingRow = existingRows?.[0];
+
+  if (!existingRow) {
+    throw new Error('Featured zapis nije pronađen.');
+  }
+
+  const oldFilePath = extractStoragePathFromPublicUrl(
+    existingRow[urlColumn],
+    bucketName
+  );
+
+  const newFilePath = buildVersionedStoragePath(ownerId, file);
 
   const { error: uploadError } = await supabase
     .storage
-    .from('team-logos')
-    .upload(filePath, file.buffer, {
+    .from(bucketName)
+    .upload(newFilePath, file.buffer, {
       contentType: file.mimetype,
-      upsert: true
+      upsert: false
     });
 
   if (uploadError) {
@@ -211,66 +274,83 @@ async function uploadTeamLogo(teamId, file) {
 
   const { data: publicUrlData } = supabase
     .storage
-    .from('team-logos')
-    .getPublicUrl(filePath);
+    .from(bucketName)
+    .getPublicUrl(newFilePath);
 
-  return publicUrlData.publicUrl;
-}
+  const publicUrl = publicUrlData.publicUrl;
+  let updatedRows;
 
-async function uploadPlayerImage(playerId, file) {
-  const fileExtension = file.originalname.split('.').pop();
-  const filePath = `${playerId}.${fileExtension}`;
+  try {
+    const { data, error: updateError } = await supabase
+      .from(tableName)
+      .update({
+        [urlColumn]: publicUrl,
+        updated_at: new Date().toISOString()
+      })
+      .eq(idColumn, ownerId)
+      .select();
 
-  const { error: uploadError } = await supabase
-    .storage
-    .from('player-avatars')
-    .upload(filePath, file.buffer, {
-      contentType: file.mimetype,
-      upsert: true
-    });
+    if (updateError) {
+      throw new Error(updateError.message);
+    }
 
-  if (uploadError) {
-    throw new Error(uploadError.message);
+    if (!data?.length) {
+      throw new Error('Featured zapis nije pronađen tijekom updatea.');
+    }
+
+    updatedRows = data;
+  } catch (updateError) {
+    try {
+      await removeStorageObject(bucketName, newFilePath);
+    } catch (cleanupError) {
+      throw new Error(
+        `${updateError.message} Novi objekt nije moguće očistiti: ` +
+        cleanupError.message
+      );
+    }
+
+    throw updateError;
   }
 
-  const { data: publicUrlData } = supabase
-    .storage
-    .from('player-avatars')
-    .getPublicUrl(filePath);
+  let cleanupWarning = null;
 
-  return publicUrlData.publicUrl;
-}
-
-async function updateFeaturedTeamLogo(teamId, logoUrl) {
-  const { data, error } = await supabase
-    .from('featured_team')
-    .update({
-      logo_url: logoUrl
-    })
-    .eq('team_id', teamId)
-    .select();
-
-  if (error) {
-    throw new Error(error.message);
+  if (oldFilePath && oldFilePath !== newFilePath) {
+    try {
+      await removeStorageObject(bucketName, oldFilePath);
+    } catch (cleanupError) {
+      cleanupWarning =
+        `Novi objekt je spremljen, ali stari nije obrisan: ` +
+        cleanupError.message;
+    }
   }
 
-  return data;
+  return {
+    publicUrl,
+    data: updatedRows,
+    cleanupWarning
+  };
 }
 
-async function updateFeaturedPlayerImage(playerId, imageUrl) {
-  const { data, error } = await supabase
-    .from('featured_player')
-    .update({
-      image_url: imageUrl
-    })
-    .eq('player_id', playerId)
-    .select();
+async function replaceFeaturedTeamLogo(teamId, file) {
+  return replaceFeaturedAsset({
+    tableName: 'featured_team',
+    idColumn: 'team_id',
+    ownerId: teamId,
+    urlColumn: 'logo_url',
+    bucketName: 'team-logos',
+    file
+  });
+}
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
+async function replaceFeaturedPlayerImage(playerId, file) {
+  return replaceFeaturedAsset({
+    tableName: 'featured_player',
+    idColumn: 'player_id',
+    ownerId: playerId,
+    urlColumn: 'image_url',
+    bucketName: 'player-avatars',
+    file
+  });
 }
 
 function extractStoragePathFromPublicUrl(publicUrl, bucketName) {
@@ -285,7 +365,15 @@ function extractStoragePathFromPublicUrl(publicUrl, bucketName) {
     return null;
   }
 
-  return publicUrl.substring(markerIndex + marker.length);
+  const encodedPath = publicUrl
+    .substring(markerIndex + marker.length)
+    .split(/[?#]/)[0];
+
+  try {
+    return decodeURIComponent(encodedPath);
+  } catch {
+    return encodedPath;
+  }
 }
 
 async function deleteFeaturedTeam(teamId) {
@@ -392,11 +480,8 @@ module.exports = {
   updateFeaturedTeamFeatured,
   updateFeaturedPlayerFeatured,
 
-  uploadTeamLogo,
-  uploadPlayerImage,
-
-  updateFeaturedTeamLogo,
-  updateFeaturedPlayerImage,
+  replaceFeaturedTeamLogo,
+  replaceFeaturedPlayerImage,
 
   deleteFeaturedTeam,
   deleteFeaturedPlayer

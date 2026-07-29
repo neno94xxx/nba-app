@@ -15,11 +15,8 @@ const {
   updateFeaturedTeamFeatured,
   updateFeaturedPlayerFeatured,
 
-  uploadTeamLogo,
-  uploadPlayerImage,
-
-  updateFeaturedTeamLogo,
-  updateFeaturedPlayerImage,
+  replaceFeaturedTeamLogo,
+  replaceFeaturedPlayerImage,
 
   deleteFeaturedTeam,
   deleteFeaturedPlayer
@@ -232,19 +229,15 @@ router.post(
         });
       }
 
-      const logoUrl = await uploadTeamLogo(
+      const replacement = await replaceFeaturedTeamLogo(
         teamId,
         req.file
       );
 
-      const data = await updateFeaturedTeamLogo(
-        teamId,
-        logoUrl
-      );
-
       res.json({
-        logo_url: logoUrl,
-        data
+        logo_url: replacement.publicUrl,
+        data: replacement.data,
+        cleanup_warning: replacement.cleanupWarning
       });
     } catch (err) {
       res.status(500).json({
@@ -267,19 +260,15 @@ router.post(
         });
       }
 
-      const imageUrl = await uploadPlayerImage(
+      const replacement = await replaceFeaturedPlayerImage(
         playerId,
         req.file
       );
 
-      const data = await updateFeaturedPlayerImage(
-        playerId,
-        imageUrl
-      );
-
       res.json({
-        image_url: imageUrl,
-        data
+        image_url: replacement.publicUrl,
+        data: replacement.data,
+        cleanup_warning: replacement.cleanupWarning
       });
     } catch (err) {
       res.status(500).json({

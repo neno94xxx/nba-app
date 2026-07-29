@@ -760,8 +760,14 @@ async function uploadTeamLogo(teamId, file) {
 
     await loadFeaturedTeams(false);
 
-    statusMessage.textContent =
-      `Logo uploaded for team ${teamId}.`;
+    if (data.cleanup_warning) {
+      console.warn(data.cleanup_warning);
+      statusMessage.textContent =
+        `Logo je zamijenjen za team ${teamId}. ${data.cleanup_warning}`;
+    } else {
+      statusMessage.textContent =
+        `Logo uploaded for team ${teamId}.`;
+    }
   } catch (error) {
     console.error(error);
 
@@ -799,8 +805,14 @@ async function uploadPlayerImage(playerId, file) {
 
     await loadFeaturedPlayers(false);
 
-    statusMessage.textContent =
-      `Image uploaded for player ${playerId}.`;
+    if (data.cleanup_warning) {
+      console.warn(data.cleanup_warning);
+      statusMessage.textContent =
+        `Slika je zamijenjena za player ${playerId}. ${data.cleanup_warning}`;
+    } else {
+      statusMessage.textContent =
+        `Image uploaded for player ${playerId}.`;
+    }
   } catch (error) {
     console.error(error);
 
