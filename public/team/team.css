@@ -21,6 +21,17 @@ input {
   padding: 6px;
 }
 
+input[type="file"] {
+  width: auto;
+  padding: 0;
+}
+
+small {
+  display: block;
+  margin-top: 4px;
+  color: #555;
+}
+
 button {
   padding: 8px 12px;
 }
@@ -84,4 +95,29 @@ th {
 
 .mismatch-cell {
   background-color: #ffcccc;
+}
+
+.table-message {
+  min-height: 20px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.coach-image,
+.coach-image-preview img {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #eee;
+}
+
+.coach-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coach-image-preview[hidden] {
+  display: none;
 }

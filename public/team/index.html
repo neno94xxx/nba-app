@@ -11,7 +11,7 @@
 
   <h2>Insert Team</h2>
 
-  <form id="teamForm">
+  <form id="teamForm" enctype="multipart/form-data">
     <input id="edit_id" name="edit_id" type="hidden" />
     <div>
       <label for="team_id">Team ID</label>
@@ -43,6 +43,29 @@
       <input id="conference" name="conference" type="text" />
     </div>
 
+    <div>
+      <label for="coach_id">Coach ID</label>
+      <input id="coach_id" name="coach_id" type="number" />
+    </div>
+
+    <div>
+      <label for="coach_name">Coach Name</label>
+      <input id="coach_name" name="coach_name" type="text" />
+    </div>
+
+    <div>
+      <label for="coach_image">Coach Image</label>
+      <input
+        id="coach_image"
+        name="coach_image"
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+      />
+      <small>JPG, PNG, WEBP ili GIF; najviše 5 MB.</small>
+    </div>
+
+    <div id="coachImagePreview" class="coach-image-preview" hidden></div>
+
     <button id="saveTeamButton" type="submit">Save Team</button>
   </form>
 
@@ -57,12 +80,17 @@
         <button id="loadTeamsButton">Load API Teams</button>
         </div>
 
+        <div id="apiTeamsMessage" class="table-message"></div>
+
         <div class="table-scroll">
         <table>
             <thead>
             <tr>
                 <th>Team ID</th>
                 <th>Abbreviation</th>
+                <th>Coach ID</th>
+                <th>Head Coach</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody id="apiTeamsTableBody"></tbody>
@@ -87,6 +115,9 @@
                     <th>Nickname</th>
                     <th>Full Name</th>
                     <th>Conference</th>
+                    <th>Coach ID</th>
+                    <th>Coach Name</th>
+                    <th>Coach Image</th>
                     <th>Actions</th>
                 </tr>
             </thead>

@@ -7,6 +7,8 @@ const gamesTableBody = document.getElementById('gamesTableBody');
 
 let gamesData = [];
 let importedGameIds = new Set();
+let isBatchImporting = false;
+let isSingleImporting = false;
 
 function formatDate(date) {
   if (!date) return '';
@@ -39,74 +41,6 @@ function buildScore(game) {
   if (teamBPoints === null || teamBPoints === undefined) return '';
 
   return `${teamAPoints} - ${teamBPoints}`;
-}
-
-function getResultSet(data, name) {
-  return data.resultSets?.find((resultSet) => resultSet.name === name);
-}
-
-function rowToObject(headers, row) {
-  const obj = {};
-
-  headers.forEach((header, index) => {
-    obj[header] = row[index];
-  });
-
-  return obj;
-}
-
-function mapPlayerStatToDbRow(playerStat) {
-  return {
-    game_id: playerStat.GAME_ID,
-
-    team_id: playerStat.TEAM_ID,
-    player_id: playerStat.PLAYER_ID,
-
-    start_position: playerStat.START_POSITION || null,
-
-    min: playerStat.MIN || null,
-
-    fgm: playerStat.FGM ?? null,
-    fga: playerStat.FGA ?? null,
-    fg_pct: playerStat.FG_PCT ?? null,
-
-    fg3m: playerStat.FG3M ?? null,
-    fg3a: playerStat.FG3A ?? null,
-    fg3_pct: playerStat.FG3_PCT ?? null,
-
-    ftm: playerStat.FTM ?? null,
-    fta: playerStat.FTA ?? null,
-    ft_pct: playerStat.FT_PCT ?? null,
-
-    oreb: playerStat.OREB ?? null,
-    dreb: playerStat.DREB ?? null,
-    reb: playerStat.REB ?? null,
-
-    ast: playerStat.AST ?? null,
-    stl: playerStat.STL ?? null,
-    blk: playerStat.BLK ?? null,
-
-    turnovers: playerStat.TO ?? null,
-    pf: playerStat.PF ?? null,
-    pts: playerStat.PTS ?? null,
-
-    plus_minus: playerStat.PLUS_MINUS ?? null
-  };
-}
-
-function buildPlayerGameStatsRows(boxScoreData) {
-  const playerStatsResultSet = getResultSet(
-    boxScoreData,
-    'PlayerStats'
-  );
-
-  if (!playerStatsResultSet) {
-    return [];
-  }
-
-  return playerStatsResultSet.rowSet
-    .map((row) => rowToObject(playerStatsResultSet.headers, row))
-    .map(mapPlayerStatToDbRow);
 }
 
 async function loadImportedGameIds() {
@@ -152,7 +86,7 @@ function renderGames() {
             class="import-game-stats-button"
             data-index="${index}"
             type="button"
-            ${isImported ? 'disabled' : ''}
+            ${isImported || isBatchImporting || isSingleImporting ? 'disabled' : ''}
           >
             ${isImported ? 'Imported' : 'Import Data'}
           </button>
@@ -168,7 +102,8 @@ function renderGames() {
 function updateImportNext20Button() {
   const missingGames = getMissingGames();
 
-  importNext20Button.disabled = missingGames.length === 0;
+  importNext20Button.disabled =
+    isBatchImporting || isSingleImporting || missingGames.length === 0;
 }
 
 function getMissingGames() {
@@ -188,85 +123,60 @@ function attachImportEvents() {
         return;
       }
 
-      const success = await importPlayerGameStats(game);
+      isSingleImporting = true;
+      loadGamesButton.disabled = true;
+      renderGames();
 
-      if (success) {
+      const result = await importPlayerGameStats(game);
+
+      isSingleImporting = false;
+      loadGamesButton.disabled = false;
+
+      if (result) {
         importedGameIds.add(normalize(game.game_id));
-        renderGames();
       }
+
+      renderGames();
     });
   });
-}
-
-async function loadPlayerGameStats(game) {
-  const response = await fetch(
-    `/api/player-game-stats/boxscore?gameId=${game.game_id}`
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    console.error(data);
-    throw new Error(
-      data.error || `Greška kod dohvaćanja player stats za game ${game.game_id}.`
-    );
-  }
-
-  console.log('PLAYER GAME STATS RESPONSE:', data);
-
-  return data;
 }
 
 async function importPlayerGameStats(game) {
   try {
     statusMessage.textContent =
-      `Loading player game stats for ${game.game_id}...`;
-
-    const boxScoreData = await loadPlayerGameStats(game);
-
-    const rows = buildPlayerGameStatsRows(boxScoreData);
-
-    if (!rows.length) {
-      statusMessage.textContent =
-        `Nema PlayerStats redaka za game ${game.game_id}.`;
-      return false;
-    }
-
-    console.log('PLAYER GAME STATS ROWS FOR IMPORT:', rows);
-
-    statusMessage.textContent =
-      `Importing ${rows.length} player stat rows for game ${game.game_id}...`;
+      `Dohvaćam i spremam statistiku za ${game.game_id}...`;
 
     const response = await fetch('/api/player-game-stats/import', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ rows })
+      body: JSON.stringify({ gameId: game.game_id })
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || data.imported !== true) {
       console.error(data);
       statusMessage.textContent =
-        `Greška kod importa player stats za game ${game.game_id}: ${data.error}`;
-      return false;
+        `Statistika za ${game.game_id} nije spremljena: ${data.error || 'nepoznata greška'}`;
+      return null;
     }
 
     console.log('PLAYER GAME STATS IMPORT:', data);
 
     statusMessage.textContent =
-      `Imported ${data.inserted} player stat rows for game ${game.game_id}.`;
+      `Imported: spremljeno ${data.stored}/${data.expected} redaka za ${game.game_id} ` +
+      `(${data.source}, novih ${data.inserted}).`;
 
-    return true;
+    return data;
   } catch (error) {
     console.error(error);
 
     statusMessage.textContent =
-      `Dogodila se greška kod importa player stats za game ${game.game_id}.`;
+      `Statistika za ${game.game_id} nije spremljena.`;
 
-    return false;
+    return null;
   }
 }
 
@@ -278,10 +188,13 @@ async function importNext20MissingGames() {
     return;
   }
 
+  isBatchImporting = true;
   importNext20Button.disabled = true;
   loadGamesButton.disabled = true;
+  renderGames();
 
   let importedCount = 0;
+  let insertedRows = 0;
 
   for (let i = 0; i < missingGames.length; i++) {
     const game = missingGames[i];
@@ -289,20 +202,23 @@ async function importNext20MissingGames() {
     statusMessage.textContent =
       `Importing ${i + 1} / ${missingGames.length}: ${game.game_id}`;
 
-    const success = await importPlayerGameStats(game);
+    const result = await importPlayerGameStats(game);
 
-    if (success) {
+    if (result) {
       importedCount += 1;
+      insertedRows += result.inserted;
       importedGameIds.add(normalize(game.game_id));
       renderGames();
     }
   }
 
+  isBatchImporting = false;
   loadGamesButton.disabled = false;
-  updateImportNext20Button();
+  renderGames();
 
   statusMessage.textContent =
-    `Finished. Imported ${importedCount} / ${missingGames.length} games.`;
+    `Finished. Verified ${importedCount}/${missingGames.length} games; ` +
+    `stored ${insertedRows} new player rows.`;
 }
 
 async function loadGames() {
